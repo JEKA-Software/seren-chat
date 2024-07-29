@@ -31,13 +31,14 @@ import {
   ChatHistoryLoadingState,
   CosmosDBStatus,
   ErrorMessage,
-  ExecResults,
-} from "../../api";
-import { Answer } from "../../components/Answer";
-import { QuestionInput } from "../../components/QuestionInput";
-import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
-import { AppStateContext } from "../../state/AppProvider";
-import { useBoolean } from "@fluentui/react-hooks";
+  ExecResults
+} from '../../api'
+import { Answer } from '../../components/Answer'
+import { QuestionInput } from '../../components/QuestionInput'
+import { ChatHistoryPanel } from '../../components/ChatHistory/ChatHistoryPanel'
+import { AppStateContext } from '../../state/AppProvider'
+import { useBoolean } from '@fluentui/react-hooks'
+import LoadingAnimation from '../../components/Answer/LoadingAnimation'
 
 const enum messageStatus {
   NotRunning = 'Not Running',
@@ -712,22 +713,21 @@ const Chat = () => {
   }
 
   const parsePlotFromMessage = (message: ChatMessage) => {
-    if (message?.role && message?.role === "tool") {
+    if (message?.role && message?.role === 'tool') {
       try {
-        const execResults = JSON.parse(message.content) as AzureSqlServerExecResults;
-        const codeExecResult = execResults.all_exec_results.at(-1)?.code_exec_result;
+        const execResults = JSON.parse(message.content) as AzureSqlServerExecResults
+        const codeExecResult = execResults.all_exec_results.at(-1)?.code_exec_result
         if (codeExecResult === undefined) {
-          return null;
+          return null
         }
-        return codeExecResult;
-      }
-      catch {
-        return null;
+        return codeExecResult
+      } catch {
+        return null
       }
       // const execResults = JSON.parse(message.content) as AzureSqlServerExecResults;
       // return execResults.all_exec_results.at(-1)?.code_exec_result;
     }
-    return null;
+    return null
   }
 
   const disabledButton = () => {
@@ -812,19 +812,11 @@ const Chat = () => {
                   </>
                 ))}
                 {showLoadingMessage && (
-                  <>
-                    <div className={styles.chatMessageGpt}>
-                      <Answer
-                        answer={{
-                          answer: "Generating answer...",
-                          citations: [],
-                          plotly_data: null
-                        }}
-                        onCitationClicked={() => null}
-                        onExectResultClicked={() => null}
-                      />
+                  <div className={styles.chatMessageGpt}>
+                    <div className={styles.chatLoadingContainer}>
+                      <LoadingAnimation />
                     </div>
-                  </>
+                  </div>
                 )}
                 <div ref={chatMessageStreamEnd} />
               </div>
@@ -984,30 +976,43 @@ const Chat = () => {
                 />
               </Stack>
               <Stack horizontalAlign="space-between">
-                {execResults.map((execResult) => {
+                {execResults.map(execResult => {
                   return (
                     <Stack className={styles.exectResultList} verticalAlign="space-between">
-                      <><span>Intent:</span> <p>{execResult.intent}</p></>
-                      {execResult.search_query && <><span>Search Query:</span>
-                        <SyntaxHighlighter
-                          style={nord}
-                          wrapLines={true}
-                          lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
-                          language="sql"
-                          PreTag="p">
-                          {execResult.search_query}
-                        </SyntaxHighlighter></>}
-                      {execResult.search_result && <><span>Search Result:</span> <p>{execResult.search_result}</p></>}
-                      {execResult.code_generated && <><span>Code Generated:</span>
-                        <SyntaxHighlighter
-                          style={nord}
-                          wrapLines={true}
-                          lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
-                          language="python"
-                          PreTag="p">
-                          {execResult.code_generated}
-                        </SyntaxHighlighter>
-                      </>}
+                      <>
+                        <span>Intent:</span> <p>{execResult.intent}</p>
+                      </>
+                      {execResult.search_query && (
+                        <>
+                          <span>Search Query:</span>
+                          <SyntaxHighlighter
+                            style={nord}
+                            wrapLines={true}
+                            lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+                            language="sql"
+                            PreTag="p">
+                            {execResult.search_query}
+                          </SyntaxHighlighter>
+                        </>
+                      )}
+                      {execResult.search_result && (
+                        <>
+                          <span>Search Result:</span> <p>{execResult.search_result}</p>
+                        </>
+                      )}
+                      {execResult.code_generated && (
+                        <>
+                          <span>Code Generated:</span>
+                          <SyntaxHighlighter
+                            style={nord}
+                            wrapLines={true}
+                            lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+                            language="python"
+                            PreTag="p">
+                            {execResult.code_generated}
+                          </SyntaxHighlighter>
+                        </>
+                      )}
                     </Stack>
                   )
                 })}
