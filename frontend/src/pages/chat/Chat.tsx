@@ -65,6 +65,13 @@ const Chat = () => {
   const [hideErrorDialog, { toggle: toggleErrorDialog }] = useBoolean(true)
   const [errorMsg, setErrorMsg] = useState<ErrorMessage | null>()
   const [logo, setLogo] = useState('')
+  const questionInputRef = useRef<{ sendQuestion: (question: string) => void } | null>(null)
+
+  const handleButtonClick = (text: string) => {
+    if (questionInputRef.current) {
+      questionInputRef.current.sendQuestion(text)
+    }
+  }
 
   const errorDialogContentProps = {
     type: DialogType.close,
@@ -821,7 +828,23 @@ const Chat = () => {
                 <div ref={chatMessageStreamEnd} />
               </div>
             )}
-
+            <div className={styles.buttonContainer}>
+              <button
+                className={styles.button}
+                onClick={() => handleButtonClick('What is the schedule for trash and recycle?')}>
+                <span className={styles.buttonText}>Trash Pickup</span>
+              </button>
+              <button
+                className={styles.button}
+                onClick={() => handleButtonClick('Can I put up a fence on my property?')}>
+                <span className={styles.buttonText}>Fences</span>
+              </button>
+              <button
+                className={styles.button}
+                onClick={() => handleButtonClick('What are the rules for flags on my property?')}>
+                <span className={styles.buttonText}>Flags</span>
+              </button>
+            </div>
             <Stack horizontal className={styles.chatInput}>
               {isLoading && messages.length > 0 && (
                 <Stack
@@ -838,6 +861,7 @@ const Chat = () => {
                   </span>
                 </Stack>
               )}
+
               {/* <Stack>
                 {appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && (
                   <CommandBarButton
@@ -904,6 +928,7 @@ const Chat = () => {
                   modalProps={modalProps}></Dialog>
               </Stack> */}
               <QuestionInput
+                ref={questionInputRef}
                 clearOnSend
                 placeholder="Type a new question..."
                 disabled={isLoading}
