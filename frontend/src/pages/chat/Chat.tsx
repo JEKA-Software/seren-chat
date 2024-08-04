@@ -182,13 +182,18 @@ const Chat = () => {
     }
   }, [stopTyping])
 
-  const handleCommonQuestion = (text: string, answer: string) => {
+  const handleCommonQuestion = (text: string, answer: string, sendQuestion: boolean = true) => {
     if (isLoading) {
       return
     }
     setShowLoadingMessage(true)
     setIsLoading(true)
     setStopTyping(false)
+
+    // Clear any existing typing interval
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current)
+    }
 
     const userMessage: ChatMessage = {
       id: uuid(),
@@ -206,11 +211,12 @@ const Chat = () => {
 
     let conversation: Conversation | null | undefined = appStateContext?.state?.currentChat
 
-    setMessages(prevState => [...prevState, userMessage])
+    if (sendQuestion) {
+      setMessages(prevState => [...prevState, userMessage])
+    }
 
     const simulateTyping = (response: string, delay: number) => {
       setShowLoadingMessage(false)
-      setIsLoading(false)
       let index = 0
       typingIntervalRef.current = setInterval(() => {
         if (index < response.length) {
@@ -224,32 +230,38 @@ const Chat = () => {
         } else {
           clearInterval(typingIntervalRef.current!)
           setIsLoading(false)
-          setShowLoadingMessage(false)
         }
       }, delay)
     }
 
-    setTimeout(() => {
-      if (!conversation?.id) {
-        conversation = {
-          id: uuid(),
-          title: text,
-          messages: [userMessage, hardcodedResponse],
-          date: new Date().toISOString()
+    // Use Promise to ensure proper sequencing
+    new Promise<void>(resolve => {
+      setTimeout(() => {
+        if (!conversation?.id) {
+          conversation = {
+            id: uuid(),
+            title: text,
+            messages: sendQuestion ? [userMessage, hardcodedResponse] : [hardcodedResponse],
+            date: new Date().toISOString()
+          }
+        } else {
+          conversation = {
+            id: uuid(),
+            title: text,
+            messages: sendQuestion
+              ? [...conversation.messages, userMessage, hardcodedResponse]
+              : [...conversation.messages, hardcodedResponse],
+            date: new Date().toISOString()
+          }
         }
-      } else {
-        conversation = {
-          id: uuid(),
-          title: text,
-          messages: [...conversation.messages, userMessage, hardcodedResponse],
-          date: new Date().toISOString()
-        }
-      }
 
-      appStateContext?.dispatch({ type: 'UPDATE_CURRENT_CHAT', payload: conversation })
-      setMessages(prevState => [...prevState, hardcodedResponse])
+        appStateContext?.dispatch({ type: 'UPDATE_CURRENT_CHAT', payload: conversation })
+        setMessages(prevState => (sendQuestion ? [...prevState, hardcodedResponse] : [...prevState, hardcodedResponse]))
+        resolve()
+      }, 1250)
+    }).then(() => {
       simulateTyping(answer, 10)
-    }, 1250)
+    })
   }
 
   const makeApiRequestWithoutCosmosDB = async (question: string, conversationId?: string) => {
