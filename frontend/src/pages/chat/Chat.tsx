@@ -70,6 +70,8 @@ const Chat = () => {
     sendQuestion: (question: string) => void
   } | null>(null)
   const [hasAsked, setHasAsked] = useState(false)
+  const [stopTyping, setStopTyping] = useState(false)
+  const typingIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const errorDialogContentProps = {
     type: DialogType.close,
@@ -172,12 +174,21 @@ const Chat = () => {
     }
   }
 
+  useEffect(() => {
+    if (stopTyping && typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current)
+      setIsLoading(false)
+      setShowLoadingMessage(false)
+    }
+  }, [stopTyping])
+
   const handleCommonQuestion = (text: string, answer: string) => {
     if (isLoading) {
       return
     }
     setIsLoading(true)
     setShowLoadingMessage(true)
+    setStopTyping(false)
 
     const userMessage: ChatMessage = {
       id: uuid(),
@@ -189,13 +200,32 @@ const Chat = () => {
     const hardcodedResponse: ChatMessage = {
       id: uuid(),
       role: 'assistant',
-      content: answer,
+      content: '',
       date: new Date().toISOString()
     }
 
     let conversation: Conversation | null | undefined = appStateContext?.state?.currentChat
 
     setMessages(prevState => [...prevState, userMessage])
+
+    const simulateTyping = (response: string, delay: number) => {
+      let index = 0
+      typingIntervalRef.current = setInterval(() => {
+        if (index < response.length) {
+          hardcodedResponse.content += response[index]
+          setMessages(prevState => {
+            const updatedMessages = [...prevState]
+            updatedMessages[updatedMessages.length - 1] = { ...hardcodedResponse }
+            return updatedMessages
+          })
+          index++
+        } else {
+          clearInterval(typingIntervalRef.current!)
+          setIsLoading(false)
+          setShowLoadingMessage(false)
+        }
+      }, delay)
+    }
 
     setTimeout(() => {
       if (!conversation?.id) {
@@ -216,8 +246,7 @@ const Chat = () => {
 
       appStateContext?.dispatch({ type: 'UPDATE_CURRENT_CHAT', payload: conversation })
       setMessages(prevState => [...prevState, hardcodedResponse])
-      setIsLoading(false)
-      setShowLoadingMessage(false)
+      simulateTyping(answer, 10)
     }, 1250)
   }
 
@@ -623,6 +652,7 @@ const Chat = () => {
     abortFuncs.current.forEach(a => a.abort())
     setShowLoadingMessage(false)
     setIsLoading(false)
+    setStopTyping(true)
   }
 
   useEffect(() => {
