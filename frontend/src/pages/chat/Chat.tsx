@@ -39,6 +39,7 @@ import { ChatHistoryPanel } from '../../components/ChatHistory/ChatHistoryPanel'
 import { AppStateContext } from '../../state/AppProvider'
 import { useBoolean } from '@fluentui/react-hooks'
 import LoadingAnimation from '../../components/Answer/LoadingAnimation'
+import CommonQuestions from '../../components/QuestionInput/CommonQuestions'
 
 const enum messageStatus {
   NotRunning = 'Not Running',
@@ -65,13 +66,10 @@ const Chat = () => {
   const [hideErrorDialog, { toggle: toggleErrorDialog }] = useBoolean(true)
   const [errorMsg, setErrorMsg] = useState<ErrorMessage | null>()
   const [logo, setLogo] = useState('')
-  const questionInputRef = useRef<{ sendQuestion: (question: string) => void } | null>(null)
-
-  const handleButtonClick = (text: string) => {
-    if (questionInputRef.current) {
-      questionInputRef.current.sendQuestion(text)
-    }
-  }
+  const questionInputRef = useRef<{
+    sendQuestion: (question: string) => void
+  } | null>(null)
+  const [hasAsked, setHasAsked] = useState(false)
 
   const errorDialogContentProps = {
     type: DialogType.close,
@@ -172,6 +170,55 @@ const Chat = () => {
         ? setMessages([...messages, assistantMessage])
         : setMessages([...messages, toolMessage, assistantMessage])
     }
+  }
+
+  const handleCommonQuestion = (text: string, answer: string) => {
+    if (isLoading) {
+      return
+    }
+    setIsLoading(true)
+    setShowLoadingMessage(true)
+
+    const userMessage: ChatMessage = {
+      id: uuid(),
+      role: 'user',
+      content: text,
+      date: new Date().toISOString()
+    }
+
+    const hardcodedResponse: ChatMessage = {
+      id: uuid(),
+      role: 'assistant',
+      content: answer,
+      date: new Date().toISOString()
+    }
+
+    let conversation: Conversation | null | undefined = appStateContext?.state?.currentChat
+
+    setMessages(prevState => [...prevState, userMessage])
+
+    setTimeout(() => {
+      if (!conversation?.id) {
+        conversation = {
+          id: uuid(),
+          title: text,
+          messages: [userMessage, hardcodedResponse],
+          date: new Date().toISOString()
+        }
+      } else {
+        conversation = {
+          id: uuid(),
+          title: text,
+          messages: [...conversation.messages, userMessage, hardcodedResponse],
+          date: new Date().toISOString()
+        }
+      }
+
+      appStateContext?.dispatch({ type: 'UPDATE_CURRENT_CHAT', payload: conversation })
+      setMessages(prevState => [...prevState, hardcodedResponse])
+      setIsLoading(false)
+      setShowLoadingMessage(false)
+    }, 1250)
   }
 
   const makeApiRequestWithoutCosmosDB = async (question: string, conversationId?: string) => {
@@ -828,23 +875,7 @@ const Chat = () => {
                 <div ref={chatMessageStreamEnd} />
               </div>
             )}
-            <div className={styles.buttonContainer}>
-              <button
-                className={styles.button}
-                onClick={() => handleButtonClick('What is the schedule for trash and recycle?')}>
-                <span className={styles.buttonText}>Trash Pickup</span>
-              </button>
-              <button
-                className={styles.button}
-                onClick={() => handleButtonClick('Can I put up a fence on my property?')}>
-                <span className={styles.buttonText}>Fences</span>
-              </button>
-              <button
-                className={styles.button}
-                onClick={() => handleButtonClick('What are the rules for flags on my property?')}>
-                <span className={styles.buttonText}>Flags</span>
-              </button>
-            </div>
+            {!hasAsked && <CommonQuestions handleCommonQuestion={handleCommonQuestion} />}
             <Stack horizontal className={styles.chatInput}>
               {isLoading && messages.length > 0 && (
                 <Stack
@@ -933,6 +964,7 @@ const Chat = () => {
                 placeholder="Type a new question..."
                 disabled={isLoading}
                 onSend={(question, id) => {
+                  setHasAsked(true)
                   appStateContext?.state.isCosmosDBAvailable?.cosmosDB
                     ? makeApiRequestWithCosmosDB(question, id)
                     : makeApiRequestWithoutCosmosDB(question, id)

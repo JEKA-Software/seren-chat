@@ -223,8 +223,10 @@
   position: absolute;
   width: 161px;
   height: 32px;
-  left: calc(50% - 161px / 2 + 25.8px);
+  left: 0;
+  right: 0;
   bottom: 160px;
+  margin: 0 auto;
   border: 1px solid #d1d1d1;
   border-radius: 16px;
 }

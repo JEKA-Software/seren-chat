@@ -22,6 +22,9 @@ export const QuestionInput = forwardRef(
       sendQuestion: (text: string) => {
         setQuestion(text)
         sendQuestion(text)
+      },
+      mockSendQuestion: (text: string) => {
+        setQuestion(text)
       }
     }))
 
