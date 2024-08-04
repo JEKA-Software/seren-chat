@@ -54,7 +54,7 @@ export const commonQuestions = [
   },
   {
     question: 'What color can my fence be?',
-    answer: 'Fences in Cheval West can be either black or white 1.'
+    answer: 'Fences in Cheval West can be either black or white.'
   },
   {
     buttonText: 'Flags',

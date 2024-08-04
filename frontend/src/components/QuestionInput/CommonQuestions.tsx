@@ -34,7 +34,7 @@ export default function CommonQuestions({
             question: 'Where do I have to store my bins?',
             answer:
               'Trash cans and recycling containers must be stored out of view of the street and adjoining properties at all times, except on scheduled pickup days. Containers may be placed out at the curb very early in the morning on pickup days or after dark the evening before a scheduled pickup.',
-            buttonText: 'Bin Storage'
+            buttonText: 'Storage'
           },
           {
             question: 'What are the trash pickup holidays?',
@@ -69,7 +69,7 @@ export default function CommonQuestions({
             question: 'What is the max height for a fence?',
             answer:
               'The maximum height for a fence in Cheval West is 4 feet, except for tennis courts and other special conditions as approved by the Architectural Review Committee.',
-            buttonText: 'Max Height'
+            buttonText: 'Height'
           },
           {
             question: 'What material can the fence be made out of?',
@@ -82,11 +82,11 @@ export default function CommonQuestions({
           },
           {
             question: 'What color can my fence be?',
-            answer: 'Fences in Cheval West can be either black or white 1.',
+            answer: 'Fences in Cheval West can be either black or white.',
             buttonText: 'Color'
           },
           {
-            buttonText: 'ARC Request',
+            buttonText: 'ARC',
             url: 'https://drive.jekasoftware.com/external/ce4a40031aa7b09caa286acf6c9d98f39b0049379f27f2a2a9c74fb380981fb9'
           }
         ]
@@ -127,7 +127,7 @@ export default function CommonQuestions({
               '4. POW-MIA Flag: A flag honoring prisoners of war and those missing in action.\n\n' +
               '5. First Responder Flags: Flags that recognize and honor the service of law enforcement officers, firefighters, paramedics, emergency medical technicians, correctional officers, 911 public safety telecommunicators, advanced practice registered nurses, licensed practical nurses, registered nurses, and persons participating in a statewide urban search and rescue program.\n\n' +
               'Additionally, you may erect a freestanding flagpole no more than 20 feet high on your property, provided it does not obstruct sightlines at intersections and is not erected within or upon an easement. You can display one official United States flag and one other flag permitted under the guidelines mentioned above.',
-            buttonText: 'Permitted Flags'
+            buttonText: 'Types'
           },
           {
             question: 'What are the rules for flag poles?',
@@ -157,10 +157,10 @@ export default function CommonQuestions({
           {
             question: 'Can I display political flags?',
             answer: `Yes, you can display political flags. According to the Florida Statutes, homeowners are allowed to display up to two portable, removable flags, each not larger than 4 1/2 feet by 6 feet, which can include political flags, as long as they are displayed in a respectful manner. Additionally, the Cheval West community guidelines do not specifically prohibit political flags, but they do require that all flags be properly attached to either a flagpole or flagstaff and be properly displayed and maintained.`,
-            buttonText: 'Political Flags'
+            buttonText: 'Political'
           },
           {
-            buttonText: 'ARC Request',
+            buttonText: 'ARC',
             url: 'https://drive.jekasoftware.com/external/ce4a40031aa7b09caa286acf6c9d98f39b0049379f27f2a2a9c74fb380981fb9'
           }
         ]
