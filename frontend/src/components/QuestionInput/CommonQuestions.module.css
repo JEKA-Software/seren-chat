@@ -4,31 +4,66 @@
 }
 
 .button {
-  background-color: inherit;
-  border: 2px solid #0078d4;
-  color: #0078d4;
+  background-color: white;
+  border: 2px solid transparent;
+  position: relative;
+  color: #0063a0;
   padding: 8px 20px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 25px; /* Changed to 25px for a rounded rectangle shape */
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-  height: 40px; /* Adjusted for a more rectangular shape */
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 25px;
+  transition: color 0.3s ease;
+  height: 40px;
+  z-index: 1;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(to right, #4f9ccb, #10c6b8);
+  border-radius: 27px;
+  z-index: -1;
+}
+
+.button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border-radius: 25px;
+  z-index: -1;
+  transition: background-color 0.3s ease;
 }
 
 .button:hover {
-  background-color: #e6f2ff;
   color: #005a9e;
+}
+
+.button:hover::after {
+  background-color: #e6f2ff;
 }
 
 .buttonText {
   font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .button {
+    padding: 6px 15px;
+    font-size: 14px;
+    height: 35px;
+  }
 }
