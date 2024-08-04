@@ -10,14 +10,14 @@ import styles from './QuestionInput.module.css'
 
 interface Props {
   onSend: (question: string, id?: string) => void
-  handleCommonQuestion: (question: string, answer: string) => void
+  handleCommonQuestion: (question: string, answer: string, sendQuestion: boolean) => void
   disabled: boolean
   placeholder?: string
   clearOnSend?: boolean
   conversationId?: string
 }
 
-const SIMILARITY_THRESHOLD = 0.5
+const SIMILARITY_THRESHOLD = 0.65
 
 export const QuestionInput = forwardRef(
   ({ onSend, handleCommonQuestion, disabled, placeholder, clearOnSend, conversationId }: Props, ref) => {
@@ -60,7 +60,8 @@ export const QuestionInput = forwardRef(
       const similarQuestion = findSimilarCommonQuestion(questionToSend)
 
       if (similarQuestion) {
-        handleCommonQuestion(similarQuestion.question, similarQuestion.answer)
+        onSend(questionToSend, conversationId)
+        handleCommonQuestion(similarQuestion.question, similarQuestion.answer, false)
       } else if (conversationId) {
         onSend(questionToSend, conversationId)
       } else {

@@ -1,5 +1,6 @@
 export const commonQuestions = [
   {
+    buttonText: 'Trash',
     question: 'What is the schedule for trash and recycle?',
     answer:
       `The trash and recycle pickup schedule for Cheval West Community is as follows:\n\n` +
@@ -9,6 +10,7 @@ export const commonQuestions = [
       `Please note that containers may only be left out on the day for the respective pickup and should be promptly returned from the street after collection to avoid potential fines.`
   },
   {
+    buttonText: 'Fence',
     question: 'Can I put up a fence on my property?',
     answer:
       `You can put up a fence on your property in Cheval West, but there are specific guidelines you must follow:\n\n` +
@@ -19,6 +21,7 @@ export const commonQuestions = [
       `Please ensure you follow these guidelines and obtain the necessary approvals to avoid any issues.`
   },
   {
+    buttonText: 'Flags',
     question: 'What are the rules for flags on my property?',
     answer:
       `In Florida, homeowners have specific rights regarding the display of flags on their property, as outlined in the Florida Statutes and community guidelines:\n\n` +
@@ -43,7 +46,8 @@ export const commonQuestions = [
       `These rules ensure that homeowners can display flags respectfully while adhering to community standards and legal requirements.`
   },
   {
-    question: 'When is the next CDD board meeting?',
-    answer: `The next board meeting is scheduled for Thursday, August 15, 2024, at 10:30 AM. It will be held at the Cheval Golf and Country Club, located at 4310 Cheval Boulevard, Lutz, Florida`
+    question: 'When is the next board meeting?',
+    answer: `The next board meeting is scheduled for Thursday, August 15, 2024, at 10:30 AM. It will be held at the Cheval Golf and Country Club, located at 4310 Cheval Boulevard, Lutz, Florida`,
+    buttonText: 'Meeting'
   }
 ]
