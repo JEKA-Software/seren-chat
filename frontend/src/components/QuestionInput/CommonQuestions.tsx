@@ -1,4 +1,3 @@
-import React from 'react'
 import styles from './CommonQuestions.module.css'
 
 export default function CommonQuestions({
@@ -20,7 +19,7 @@ export default function CommonQuestions({
               `Please note that containers may only be left out on the day for the respective pickup and should be promptly returned from the street after collection to avoid potential fines.`
           )
         }>
-        <span className={styles.buttonText}>Trash Pickup</span>
+        <span className={styles.buttonText}>Trash</span>
       </button>
       <button
         className={styles.button}
@@ -65,6 +64,16 @@ export default function CommonQuestions({
           )
         }>
         <span className={styles.buttonText}>Flags</span>
+      </button>
+      <button
+        className={styles.button}
+        onClick={() =>
+          handleCommonQuestion(
+            'When is the next CDD board meeting?',
+            `The next board meeting is scheduled for Thursday, August 15, 2024, at 10:30 AM. It will be held at the Cheval Golf and Country Club, located at 4310 Cheval Boulevard, Lutz, Florida`
+          )
+        }>
+        <span className={styles.buttonText}>Meeting</span>
       </button>
     </div>
   )

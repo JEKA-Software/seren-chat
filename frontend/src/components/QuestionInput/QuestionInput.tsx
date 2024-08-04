@@ -1,21 +1,26 @@
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { Stack, TextField } from '@fluentui/react'
 import { SendRegular } from '@fluentui/react-icons'
+import levenshtein from 'fast-levenshtein'
 
 import Send from '../../assets/Send.svg'
+import { commonQuestions } from '../../constants/commonQuestions'
 
 import styles from './QuestionInput.module.css'
 
 interface Props {
   onSend: (question: string, id?: string) => void
+  handleCommonQuestion: (question: string, answer: string) => void
   disabled: boolean
   placeholder?: string
   clearOnSend?: boolean
   conversationId?: string
 }
 
+const SIMILARITY_THRESHOLD = 0.5
+
 export const QuestionInput = forwardRef(
-  ({ onSend, disabled, placeholder, clearOnSend, conversationId }: Props, ref) => {
+  ({ onSend, handleCommonQuestion, disabled, placeholder, clearOnSend, conversationId }: Props, ref) => {
     const [question, setQuestion] = useState<string>('')
 
     useImperativeHandle(ref, () => ({
@@ -28,13 +33,35 @@ export const QuestionInput = forwardRef(
       }
     }))
 
+    const findSimilarCommonQuestion = (input: string) => {
+      const normalizedInput = input.toLowerCase().trim()
+      let mostSimilarQuestion = null
+      let highestSimilarity = 0
+
+      for (const { question, answer } of commonQuestions) {
+        const normalizedQuestion = question.toLowerCase().trim()
+        const maxLength = Math.max(normalizedInput.length, normalizedQuestion.length)
+        const similarity = 1 - levenshtein.get(normalizedInput, normalizedQuestion) / maxLength
+        if (similarity > highestSimilarity && similarity >= SIMILARITY_THRESHOLD) {
+          highestSimilarity = similarity
+          mostSimilarQuestion = { question, answer }
+        }
+      }
+
+      return mostSimilarQuestion
+    }
+
     const sendQuestion = (text?: string) => {
       const questionToSend = text || question
       if (disabled || !questionToSend.trim()) {
         return
       }
 
-      if (conversationId) {
+      const similarQuestion = findSimilarCommonQuestion(questionToSend)
+
+      if (similarQuestion) {
+        handleCommonQuestion(similarQuestion.question, similarQuestion.answer)
+      } else if (conversationId) {
         onSend(questionToSend, conversationId)
       } else {
         onSend(questionToSend)

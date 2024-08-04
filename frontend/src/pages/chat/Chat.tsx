@@ -186,8 +186,8 @@ const Chat = () => {
     if (isLoading) {
       return
     }
-    setIsLoading(true)
     setShowLoadingMessage(true)
+    setIsLoading(true)
     setStopTyping(false)
 
     const userMessage: ChatMessage = {
@@ -209,6 +209,8 @@ const Chat = () => {
     setMessages(prevState => [...prevState, userMessage])
 
     const simulateTyping = (response: string, delay: number) => {
+      setShowLoadingMessage(false)
+      setIsLoading(false)
       let index = 0
       typingIntervalRef.current = setInterval(() => {
         if (index < response.length) {
@@ -956,6 +958,7 @@ const Chat = () => {
                     ? makeApiRequestWithCosmosDB(question, id)
                     : makeApiRequestWithoutCosmosDB(question, id)
                 }}
+                handleCommonQuestion={handleCommonQuestion}
                 conversationId={
                   appStateContext?.state.currentChat?.id ? appStateContext?.state.currentChat?.id : undefined
                 }
