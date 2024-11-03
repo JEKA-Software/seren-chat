@@ -44,12 +44,12 @@ export const QuestionInput = ({
 
   const convertToBase64 = async (file: Blob) => {
     try {
-      const resizedBase64 = await resizeImage(file, 800, 800);
-      setBase64Image(resizedBase64);
+      const resizedBase64 = await resizeImage(file, 800, 800)
+      setBase64Image(resizedBase64)
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error:', error)
     }
-  };
+  }
 
   const sendQuestion = () => {
     if (disabled || !question.trim()) {
@@ -211,7 +211,14 @@ export const QuestionInput = ({
         </div>
         <div className={styles.questionInputBottomBorder} />
       </Stack>
-      <div className={styles.disclaimer}>AI-generated content may be inaccurate</div>
+      <div className={styles.disclaimer}>
+        <div className={styles.powered}>
+          <a href="https://getseren.com" style={{ textDecoration: 'none', color: 'white' }} target="_blank">
+            Powered by <span className={styles.poweredLink}>Seren</span>
+          </a>
+        </div>
+        AI-generated content may be inaccurate
+      </div>
     </div>
   )
 }

@@ -96,16 +96,31 @@
 
 .disclaimer {
   position: fixed;
-  font-size: 12px;
+  font-size: 9px;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  padding: 20px 0;
+  padding: 10px 0;
   color: white;
   z-index: 12;
   text-align: center;
   border-radius: 8px;
   width: 100%;
+  color: #5f5f5f;
+  font-family: 'Inter', sans-serif;
+}
+
+.powered {
+  color: white;
+  font-size: 12px;
+}
+
+.poweredLink {
+  color: #fbdd6e;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 @media (max-width: 480px) {
